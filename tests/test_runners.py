@@ -1,14 +1,12 @@
 """Tests for test runners."""
 
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-import pytest
-
-from proven.runners.base import TestRunner, TestResult
-from proven.runners.pytest_runner import PytestRunner
+from proven.runners.base import TestResult
 from proven.runners.jest_runner import JestRunner
 from proven.runners.maven_runner import MavenRunner
+from proven.runners.pytest_runner import PytestRunner
 
 
 class TestTestResult:
@@ -244,6 +242,7 @@ class TestRunnerBaseClass:
 
         with patch("proven.runners.base.subprocess.run") as mock_run:
             from subprocess import TimeoutExpired
+
             mock_run.side_effect = TimeoutExpired("cmd", 60)
 
             exit_code, output = runner._run_command(["pytest"])

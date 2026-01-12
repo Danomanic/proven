@@ -8,17 +8,15 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, module="google")
 warnings.filterwarnings("ignore", message=".*urllib3.*OpenSSL.*")
 
 import asyncio
-import sys
 from pathlib import Path
 from typing import Optional
 
 import typer
 from rich.console import Console
-from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 
 from . import __version__
-from .config import Config, load_config, save_global_config, get_global_config_path
+from .config import Config, get_global_config_path, load_config, save_global_config
 from .providers import AnthropicProvider, GoogleProvider, OllamaProvider, OpenAIProvider
 from .providers.base import LLMProvider
 from .runners import JestRunner, MavenRunner, PytestRunner
@@ -262,7 +260,7 @@ def interactive_mode() -> None:
                     print_help()
                 elif cmd in ("/config", "/c"):
                     config = load_config()
-                    console.print(f"\n[bold]Configuration:[/bold]")
+                    console.print("\n[bold]Configuration:[/bold]")
                     console.print(f"  Provider: {config.provider}")
                     console.print(f"  Model: {config.get_model_for_provider(config.provider)}")
                     console.print(f"  Test framework: {config.test_framework}")
@@ -357,7 +355,7 @@ def generate(
         source_file = source_directory / f"{name}.py"
         language = "python"
 
-    console.print(f"\n[bold]TDD Code Generation[/bold]")
+    console.print("\n[bold]TDD Code Generation[/bold]")
     console.print(f"[dim]Provider: {config.provider}[/dim]")
     console.print(f"[dim]Test framework: {config.test_framework}[/dim]")
     console.print(f"[dim]Test file: {test_file}[/dim]")

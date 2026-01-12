@@ -1,14 +1,13 @@
 """Tests for the CLI commands."""
 
 from pathlib import Path
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from typer.testing import CliRunner
 
+from proven.config import APIKeys, Config
 from proven.main import app, get_provider, get_runner
-from proven.config import Config, APIKeys
-
 
 runner = CliRunner()
 
@@ -91,6 +90,7 @@ class TestInitCommand:
         assert result.exit_code == 0
 
         import yaml
+
         with open(temp_cwd / ".proven.yaml") as f:
             config = yaml.safe_load(f)
 
@@ -103,6 +103,7 @@ class TestInitCommand:
         assert result.exit_code == 0
 
         import yaml
+
         with open(temp_cwd / ".proven.yaml") as f:
             config = yaml.safe_load(f)
 
@@ -212,9 +213,7 @@ class TestGenerateCommand:
     ):
         """Test that generate runs the TDD workflow."""
         # Setup mocks
-        mock_load_config.return_value = Config(
-            api_keys=APIKeys(anthropic="test-key")
-        )
+        mock_load_config.return_value = Config(api_keys=APIKeys(anthropic="test-key"))
         mock_provider = MagicMock()
         mock_get_provider.return_value = mock_provider
 
@@ -235,7 +234,7 @@ class TestGenerateCommand:
         mock_engine.run = mock_run
         mock_engine_class.return_value = mock_engine
 
-        result = runner.invoke(
+        runner.invoke(
             app,
             ["generate", "Create an add function", "--yes"],
         )

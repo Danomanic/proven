@@ -1,6 +1,7 @@
 """Google Gemini provider implementation."""
 
-from typing import AsyncIterator, Optional
+from collections.abc import AsyncIterator
+from typing import Optional
 
 from google import genai
 from google.genai import types

@@ -4,11 +4,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from proven.providers.base import LLMProvider
 from proven.providers.anthropic import AnthropicProvider
-from proven.providers.openai import OpenAIProvider
+from proven.providers.base import LLMProvider
 from proven.providers.google import GoogleProvider
 from proven.providers.ollama import OllamaProvider
+from proven.providers.openai import OpenAIProvider
 
 
 class TestLLMProviderBase:
