@@ -1,0 +1,29 @@
+# Proven Configuration
+# Copy to ~/.proven/config.yaml for global config
+# or .proven.yaml for project-level config
+
+# LLM Provider: claude, openai, google, ollama
+provider: claude
+
+# Model override (optional - uses sensible defaults)
+# model: claude-sonnet-4-20250514  # Claude
+# model: gpt-4o                    # OpenAI
+# model: gemini-2.0-flash          # Google
+
+# Test framework: pytest, jest
+test_framework: pytest
+
+# Output directories
+test_directory: tests
+source_directory: src
+
+# API Keys (use environment variables for security)
+api_keys:
+  anthropic: ${ANTHROPIC_API_KEY}
+  openai: ${OPENAI_API_KEY}
+  google: ${GOOGLE_API_KEY}
+
+# Ollama configuration (for local models)
+ollama:
+  base_url: http://localhost:11434
+  model: codellama
