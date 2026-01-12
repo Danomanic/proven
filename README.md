@@ -27,14 +27,11 @@ The result? Code that's tested from the start, with clear specifications and few
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/proven.git
+git clone https://github.com/Danomanic/proven.git
 cd proven
 
 # Install
 pip install -e .
-
-# Or with pip directly (once published)
-pip install proven
 ```
 
 ## Quick Start
