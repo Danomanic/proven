@@ -41,9 +41,3 @@ select = ["E", "F", "I", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
 "proven/main.py" = ["E402"]  # Warnings must be configured before imports
-
-[tool.semantic_release]
-version_variables = ["proven/__init__.py:__version__"]
-version_toml = ["pyproject.toml:project.version"]
-branch = "main"
-build_command = ""
