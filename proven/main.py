@@ -20,7 +20,7 @@ from rich.prompt import Confirm, Prompt
 from .config import Config, load_config, save_global_config, get_global_config_path
 from .providers import AnthropicProvider, GoogleProvider, OllamaProvider, OpenAIProvider
 from .providers.base import LLMProvider
-from .runners import JestRunner, PytestRunner
+from .runners import JestRunner, MavenRunner, PytestRunner
 from .runners.base import TestRunner
 from .tdd.engine import TDDEngine
 
@@ -106,6 +106,8 @@ def get_runner(config: Config) -> TestRunner:
         return PytestRunner()
     elif framework == "jest":
         return JestRunner()
+    elif framework == "maven":
+        return MavenRunner()
     else:
         raise typer.BadParameter(f"Unknown test framework: {framework}")
 
@@ -121,6 +123,8 @@ def get_language_for_framework(framework: str) -> str:
         return "python"
     elif framework in ("jest", "mocha", "vitest"):
         return "javascript"
+    elif framework == "maven":
+        return "java"
     return "python"
 
 
@@ -145,6 +149,11 @@ def run_tdd_workflow(description: str, name: Optional[str] = None, no_confirm: b
     elif config.test_framework == "jest":
         test_file = test_directory / f"{name}.test.js"
         source_file = source_directory / f"{name}.js"
+    elif config.test_framework == "maven":
+        # Maven convention: capitalize first letter for class names
+        class_name = name.capitalize()
+        test_file = test_directory / f"{class_name}Test.java"
+        source_file = source_directory / f"{class_name}.java"
     else:
         test_file = test_directory / f"test_{name}.py"
         source_file = source_directory / f"{name}.py"
@@ -319,6 +328,12 @@ def generate(
         test_file = test_directory / f"{name}.test.js"
         source_file = source_directory / f"{name}.js"
         language = "javascript"
+    elif config.test_framework == "maven":
+        # Maven convention: capitalize first letter for class names
+        class_name = name.capitalize()
+        test_file = test_directory / f"{class_name}Test.java"
+        source_file = source_directory / f"{class_name}.java"
+        language = "java"
     else:
         test_file = test_directory / f"test_{name}.py"
         source_file = source_directory / f"{name}.py"

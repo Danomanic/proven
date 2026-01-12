@@ -159,6 +159,7 @@ ollama:
 |-----------|----------|-------|
 | pytest | Python | `pytest` |
 | Jest | JavaScript/TypeScript | `jest` |
+| Maven | Java (JUnit) | `maven` |
 
 ## How It Works
 
@@ -217,7 +218,8 @@ proven/
 ├── runners/             # Test runner implementations
 │   ├── base.py          # Abstract interface
 │   ├── pytest_runner.py
-│   └── jest_runner.py
+│   ├── jest_runner.py
+│   └── maven_runner.py
 └── tdd/                 # TDD engine
     ├── engine.py        # Workflow orchestration
     └── prompts.py       # LLM prompts for TDD

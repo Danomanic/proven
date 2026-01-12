@@ -173,6 +173,13 @@ class TestGetRunner:
 
         assert runner.name == "jest"
 
+    def test_get_runner_maven(self):
+        """Test getting Maven runner."""
+        config = Config(test_framework="maven")
+        runner = get_runner(config)
+
+        assert runner.name == "maven"
+
     def test_get_runner_invalid(self):
         """Test getting invalid runner raises error."""
         config = Config(test_framework="invalid")

@@ -8,6 +8,7 @@ import pytest
 from proven.runners.base import TestRunner, TestResult
 from proven.runners.pytest_runner import PytestRunner
 from proven.runners.jest_runner import JestRunner
+from proven.runners.maven_runner import MavenRunner
 
 
 class TestTestResult:
@@ -143,6 +144,81 @@ class TestJestRunner:
             assert result.success is False
             assert result.failed == 2
             assert result.passed == 3
+
+
+class TestMavenRunner:
+    """Tests for the Maven runner."""
+
+    def test_name(self):
+        """Test runner name."""
+        runner = MavenRunner()
+        assert runner.name == "maven"
+
+    def test_get_test_file_pattern(self):
+        """Test test file pattern."""
+        runner = MavenRunner()
+        assert runner.get_test_file_pattern() == "*Test.java"
+
+    def test_get_test_file_name(self):
+        """Test generating test file name from source."""
+        runner = MavenRunner()
+
+        assert runner.get_test_file_name("Calculator.java") == "CalculatorTest.java"
+        assert runner.get_test_file_name("Utils.java") == "UtilsTest.java"
+
+    def test_run_parses_passed_count(self, temp_cwd: Path):
+        """Test that run parses passed test count from Surefire output."""
+        runner = MavenRunner(working_dir=temp_cwd)
+
+        with patch.object(runner, "_run_command") as mock_run:
+            mock_run.return_value = (0, "Tests run: 5, Failures: 0, Errors: 0, Skipped: 0\nBUILD SUCCESS")
+
+            result = runner.run(temp_cwd / "CalculatorTest.java")
+
+            assert result.success is True
+            assert result.passed == 5
+            assert result.failed == 0
+            assert result.errors == 0
+
+    def test_run_parses_failed_count(self, temp_cwd: Path):
+        """Test that run parses failed test count from Surefire output."""
+        runner = MavenRunner(working_dir=temp_cwd)
+
+        with patch.object(runner, "_run_command") as mock_run:
+            mock_run.return_value = (1, "Tests run: 5, Failures: 2, Errors: 0, Skipped: 0\nBUILD FAILURE")
+
+            result = runner.run(temp_cwd / "CalculatorTest.java")
+
+            assert result.success is False
+            assert result.passed == 3
+            assert result.failed == 2
+            assert result.errors == 0
+
+    def test_run_parses_error_count(self, temp_cwd: Path):
+        """Test that run parses error count from Surefire output."""
+        runner = MavenRunner(working_dir=temp_cwd)
+
+        with patch.object(runner, "_run_command") as mock_run:
+            mock_run.return_value = (1, "Tests run: 5, Failures: 1, Errors: 2, Skipped: 0\nBUILD FAILURE")
+
+            result = runner.run(temp_cwd / "CalculatorTest.java")
+
+            assert result.success is False
+            assert result.passed == 2
+            assert result.failed == 1
+            assert result.errors == 2
+
+    def test_run_build_success_required(self, temp_cwd: Path):
+        """Test that success requires BUILD SUCCESS in output."""
+        runner = MavenRunner(working_dir=temp_cwd)
+
+        with patch.object(runner, "_run_command") as mock_run:
+            # Exit code 0 but no BUILD SUCCESS
+            mock_run.return_value = (0, "Tests run: 5, Failures: 0, Errors: 0")
+
+            result = runner.run(temp_cwd / "CalculatorTest.java")
+
+            assert result.success is False
 
 
 class TestRunnerBaseClass:
