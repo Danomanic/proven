@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "python",
+      "package-name": "proven",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "proven/__init__.py",
+          "glob": false
+        }
+      ]
+    }
+  }
+}
