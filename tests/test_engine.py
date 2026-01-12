@@ -1,13 +1,13 @@
 """Tests for the TDD engine."""
 
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from proven.runners.base import TestResult
 from proven.tdd.engine import TDDEngine, TDDPhase, TDDResult
 from proven.tdd.prompts import TDDPrompts
-from proven.runners.base import TestResult
 
 
 class TestTDDPrompts:
@@ -87,9 +87,7 @@ class TestTDDEngine:
         )
 
     @pytest.mark.asyncio
-    async def test_run_generates_tests_first(
-        self, engine, mock_llm_provider, temp_cwd: Path
-    ):
+    async def test_run_generates_tests_first(self, engine, mock_llm_provider, temp_cwd: Path):
         """Test that run() generates tests before implementation."""
         test_file = temp_cwd / "tests" / "test_example.py"
         source_file = temp_cwd / "src" / "example.py"
@@ -102,7 +100,7 @@ class TestTDDEngine:
             ]
         )
 
-        result = await engine.run(
+        await engine.run(
             request="Create an add function",
             test_file=test_file,
             source_file=source_file,
@@ -118,9 +116,7 @@ class TestTDDEngine:
         assert "test" in first_call_prompt.lower()
 
     @pytest.mark.asyncio
-    async def test_run_writes_test_file(
-        self, engine, mock_llm_provider, temp_cwd: Path
-    ):
+    async def test_run_writes_test_file(self, engine, mock_llm_provider, temp_cwd: Path):
         """Test that run() writes the test file."""
         test_file = temp_cwd / "tests" / "test_example.py"
         source_file = temp_cwd / "src" / "example.py"
@@ -144,9 +140,7 @@ class TestTDDEngine:
         assert "def test_example" in content
 
     @pytest.mark.asyncio
-    async def test_run_writes_source_file(
-        self, engine, mock_llm_provider, temp_cwd: Path
-    ):
+    async def test_run_writes_source_file(self, engine, mock_llm_provider, temp_cwd: Path):
         """Test that run() writes the source file."""
         test_file = temp_cwd / "tests" / "test_example.py"
         source_file = temp_cwd / "src" / "example.py"
@@ -170,16 +164,12 @@ class TestTDDEngine:
         assert "def example" in content
 
     @pytest.mark.asyncio
-    async def test_run_aborts_if_tests_not_approved(
-        self, engine, mock_llm_provider, temp_cwd: Path
-    ):
+    async def test_run_aborts_if_tests_not_approved(self, engine, mock_llm_provider, temp_cwd: Path):
         """Test that run() aborts if user doesn't approve tests."""
         test_file = temp_cwd / "tests" / "test_example.py"
         source_file = temp_cwd / "src" / "example.py"
 
-        mock_llm_provider.generate = AsyncMock(
-            return_value="```python\ndef test_example():\n    pass\n```"
-        )
+        mock_llm_provider.generate = AsyncMock(return_value="```python\ndef test_example():\n    pass\n```")
 
         with pytest.raises(RuntimeError, match="not approve"):
             await engine.run(
@@ -190,9 +180,7 @@ class TestTDDEngine:
             )
 
     @pytest.mark.asyncio
-    async def test_run_returns_green_on_success(
-        self, engine, mock_llm_provider, mock_test_runner, temp_cwd: Path
-    ):
+    async def test_run_returns_green_on_success(self, engine, mock_llm_provider, mock_test_runner, temp_cwd: Path):
         """Test that run() returns GREEN phase on success."""
         test_file = temp_cwd / "tests" / "test_example.py"
         source_file = temp_cwd / "src" / "example.py"
@@ -223,9 +211,7 @@ class TestTDDEngine:
         assert result.final_test_result.is_green
 
     @pytest.mark.asyncio
-    async def test_run_retries_on_failure(
-        self, engine, mock_llm_provider, mock_test_runner, temp_cwd: Path
-    ):
+    async def test_run_retries_on_failure(self, engine, mock_llm_provider, mock_test_runner, temp_cwd: Path):
         """Test that run() retries when tests fail."""
         test_file = temp_cwd / "tests" / "test_example.py"
         source_file = temp_cwd / "src" / "example.py"

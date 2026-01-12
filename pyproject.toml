@@ -31,3 +31,19 @@ proven = "proven.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["proven"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"proven/main.py" = ["E402"]  # Warnings must be configured before imports
+
+[tool.semantic_release]
+version_variables = ["proven/__init__.py:__version__"]
+version_toml = ["pyproject.toml:project.version"]
+branch = "main"
+build_command = ""

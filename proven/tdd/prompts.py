@@ -31,7 +31,7 @@ Remember: In TDD, we write tests FIRST. The implementation doesn't exist yet."""
     @staticmethod
     def implementation(test_framework: str, language: str = "python") -> str:
         """Get the system prompt for generating implementation to pass tests."""
-        return f"""You are implementing code to make failing tests pass. This is the GREEN phase of TDD.
+        return """You are implementing code to make failing tests pass. This is the GREEN phase of TDD.
 
 CRITICAL RULES:
 1. Write the MINIMUM code needed to pass the tests

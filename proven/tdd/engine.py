@@ -1,6 +1,5 @@
 """TDD workflow engine that orchestrates the Red-Green-Refactor cycle."""
 
-import asyncio
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -72,9 +71,7 @@ class TDDEngine:
             TDDResult with generated code and test results
         """
         # Phase 1: RED - Generate tests
-        self.console.print(
-            Panel("[bold red]PHASE 1: RED[/bold red] - Generating tests first...", border_style="red")
-        )
+        self.console.print(Panel("[bold red]PHASE 1: RED[/bold red] - Generating tests first...", border_style="red"))
 
         test_code = await self._generate_tests(request)
 
@@ -130,9 +127,7 @@ class TDDEngine:
 
         while green_result.is_red and iteration < max_iterations:
             iteration += 1
-            self.console.print(
-                f"\n[yellow]Tests still failing. Iteration {iteration}/{max_iterations}...[/yellow]"
-            )
+            self.console.print(f"\n[yellow]Tests still failing. Iteration {iteration}/{max_iterations}...[/yellow]")
             self.console.print(f"[dim]{green_result.output}[/dim]")
 
             # Ask LLM to fix the implementation
@@ -149,9 +144,7 @@ class TDDEngine:
                 f"[dim]{green_result.passed} passed[/dim]"
             )
         else:
-            self.console.print(
-                f"\n[bold red]Tests still failing after {max_iterations} iterations[/bold red]"
-            )
+            self.console.print(f"\n[bold red]Tests still failing after {max_iterations} iterations[/bold red]")
             self.console.print(f"[dim]{green_result.output}[/dim]")
 
         return TDDResult(
@@ -189,9 +182,7 @@ Write the implementation:"""
         response = await self.provider.generate(prompt, system)
         return self.prompts.extract_code_block(response, self.language)
 
-    async def _fix_implementation(
-        self, request: str, test_code: str, current_impl: str, error_output: str
-    ) -> str:
+    async def _fix_implementation(self, request: str, test_code: str, current_impl: str, error_output: str) -> str:
         """Fix implementation based on test failures."""
         system = self.prompts.implementation(self.runner.name, self.language)
         prompt = f"""The tests are failing. Fix the implementation.

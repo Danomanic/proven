@@ -1,7 +1,8 @@
 """Abstract base class for LLM providers."""
 
 from abc import ABC, abstractmethod
-from typing import AsyncIterator, Optional
+from collections.abc import AsyncIterator
+from typing import Optional
 
 
 class LLMProvider(ABC):

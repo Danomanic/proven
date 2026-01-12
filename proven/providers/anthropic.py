@@ -1,6 +1,7 @@
 """Anthropic Claude provider implementation."""
 
-from typing import AsyncIterator, Optional
+from collections.abc import AsyncIterator
+from typing import Optional
 
 import anthropic
 

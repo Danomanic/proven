@@ -4,7 +4,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 
 @dataclass
@@ -62,7 +62,7 @@ class TestRunner(ABC):
         """Return the runner name."""
         pass
 
-    def _run_command(self, command: List[str]) -> Tuple[int, str]:
+    def _run_command(self, command: list[str]) -> tuple[int, str]:
         """Run a shell command and return exit code and output."""
         try:
             result = subprocess.run(

@@ -1,6 +1,5 @@
 """Tests for the configuration module."""
 
-import os
 from pathlib import Path
 
 import pytest
@@ -8,15 +7,14 @@ import yaml
 
 from proven.config import (
     Config,
-    APIKeys,
     OllamaConfig,
+    _resolve_env_vars,
+    _resolve_env_vars_in_dict,
+    get_global_config_path,
+    get_project_config_path,
     load_config,
     save_global_config,
     save_project_config,
-    get_global_config_path,
-    get_project_config_path,
-    _resolve_env_vars,
-    _resolve_env_vars_in_dict,
 )
 
 
@@ -161,9 +159,7 @@ class TestConfigLoading:
         assert config.provider == "openai"
         assert config.test_framework == "jest"
 
-    def test_load_config_project_overrides_global(
-        self, temp_home: Path, temp_cwd: Path, clean_env
-    ):
+    def test_load_config_project_overrides_global(self, temp_home: Path, temp_cwd: Path, clean_env):
         """Test project config overrides global config."""
         # Create global config
         global_config_dir = temp_home / ".proven"
@@ -182,9 +178,7 @@ class TestConfigLoading:
         assert config.provider == "claude"
         assert config.test_framework == "jest"
 
-    def test_load_config_from_env_vars(
-        self, temp_home: Path, temp_cwd: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_load_config_from_env_vars(self, temp_home: Path, temp_cwd: Path, monkeypatch: pytest.MonkeyPatch):
         """Test API keys are loaded from environment variables."""
         monkeypatch.setenv("ANTHROPIC_API_KEY", "env-anthropic-key")
         monkeypatch.setenv("OPENAI_API_KEY", "env-openai-key")
