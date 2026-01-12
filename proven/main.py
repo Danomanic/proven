@@ -17,6 +17,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 
+from . import __version__
 from .config import Config, load_config, save_global_config, get_global_config_path
 from .providers import AnthropicProvider, GoogleProvider, OllamaProvider, OpenAIProvider
 from .providers.base import LLMProvider
@@ -33,6 +34,13 @@ config_app = typer.Typer(help="Configuration management")
 app.add_typer(config_app, name="config")
 
 console = Console()
+
+
+def version_callback(value: bool) -> None:
+    """Print version and exit."""
+    if value:
+        console.print(f"proven {__version__}")
+        raise typer.Exit()
 
 
 def get_api_key_with_prompt(config: Config, provider_name: str) -> Optional[str]:
@@ -289,7 +297,17 @@ def interactive_mode() -> None:
 
 
 @app.callback(invoke_without_command=True)
-def main(ctx: typer.Context) -> None:
+def main(
+    ctx: typer.Context,
+    version: bool = typer.Option(
+        False,
+        "--version",
+        "-V",
+        callback=version_callback,
+        is_eager=True,
+        help="Show version and exit.",
+    ),
+) -> None:
     """Proven - Test-first code generation with LLMs."""
     if ctx.invoked_subcommand is None:
         interactive_mode()
